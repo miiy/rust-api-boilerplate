@@ -12,4 +12,3 @@ pub struct User {
     pub created_at: Option<OffsetDateTime>,
     pub updated_at: Option<OffsetDateTime>,
 }
-

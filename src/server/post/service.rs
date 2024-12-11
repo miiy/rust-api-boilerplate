@@ -38,7 +38,7 @@ impl Service {
         Ok(ListResponse {
             page: pg.page,
             per_page: pg.per_page,
-            pages: pg.pages,
+            total_pages: pg.total_pages,
             data: results,
         })
     }

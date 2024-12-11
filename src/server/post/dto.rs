@@ -6,7 +6,7 @@ use time::OffsetDateTime;
 pub struct ListResponse {
     pub page: u32,
     pub per_page: u32,
-    pub pages: u32,
+    pub total_pages: u32,
     pub data: Vec<ListResponseItem>,
 }
 

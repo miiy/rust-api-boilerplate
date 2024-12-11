@@ -40,7 +40,7 @@ impl User {
             "
         SELECT `id`, `name`, `password`
         FROM `users`
-        WHERE `name`=? AND `delete_time` IS NULL
+        WHERE `name`=? AND `deleted_at` IS NULL
         ",
         )
         .bind(name)

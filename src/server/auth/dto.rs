@@ -12,7 +12,7 @@ pub struct RegisterRequest {
 
 #[derive(Debug, Serialize)]
 pub struct RegisterResponse {
-    pub id: u64,
+    pub message: String,
 }
 
 // login

@@ -32,9 +32,11 @@ impl Service {
             created_at: Some(OffsetDateTime::now_utc()),
             updated_at: Some(OffsetDateTime::now_utc()),
         };
-        let user_id = User::create(&pool, &user).await?;
+        User::create(&pool, &user).await?;
 
-        let resp = RegisterResponse { id: user_id };
+        let resp = RegisterResponse {
+            message: "Register success".to_string(),
+        };
         Ok(resp)
     }
 

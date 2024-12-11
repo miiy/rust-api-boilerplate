@@ -1,7 +1,7 @@
 pub struct Pagination {
     pub page: u32,
     pub per_page: u32,
-    pub pages: u32,
+    pub total_pages: u32,
 }
 
 impl Pagination {
@@ -16,11 +16,11 @@ impl Pagination {
             per_page.min(Self::DEFAULT_MAX_PER_PAGE)
         };
 
-        let pages = (total as f32 / per_page as f32).ceil() as u32;
+        let total_pages = (total as f32 / per_page as f32).ceil() as u32;
         Self {
             page,
             per_page,
-            pages,
+            total_pages,
         }
     }
 

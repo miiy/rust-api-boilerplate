@@ -62,7 +62,7 @@ The project adopts a modular architectural design.
 
 Auth: register, login
 
-User: me
+User: profile
 
 Post: create, update, delete, detail, list
 

@@ -11,8 +11,8 @@ impl Post {
         ",
         )
         .bind(&item.category_id)
-            .bind(&item.title)
-            .bind(&item.author)
+        .bind(&item.title)
+        .bind(&item.author)
         .bind(&item.content)
         .bind(&item.created_at)
         .bind(&item.updated_at)

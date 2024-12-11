@@ -2,7 +2,7 @@ use config::{ConfigError, File};
 use serde::Deserialize;
 use std::env;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Config {
     pub app: App,
     pub server: Server,
@@ -11,7 +11,7 @@ pub struct Config {
     pub jwt: JWT,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct App {
     pub name: String,
     pub url: String,
@@ -19,22 +19,22 @@ pub struct App {
     pub debug: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Server {
     pub addrs: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Database {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Redis {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct JWT {
     pub secret: String,
     pub expires_in: u32,
