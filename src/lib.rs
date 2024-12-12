@@ -17,8 +17,7 @@ pub struct AppState {
 impl AppState {
     pub fn new(c: &config::Config) -> Self {
         // db
-        let pool = db::init_pool(&c.database.url)
-            .expect("Failed to create pool");
+        let pool = db::init_pool(&c.database.url).expect("Failed to create pool");
 
         // redis
         let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
