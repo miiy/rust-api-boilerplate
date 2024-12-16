@@ -21,12 +21,12 @@ pub enum AuthError {
     #[display("user not found")]
     UserNotFound,
     // register
-    #[display("username exists")]
+    #[display("username already exists")]
     UsernameAlreadyExists,
-    #[display("email exists")]
+    #[display("email already exists")]
     EmailAlreadyExists,
-    #[display("password differ")]
-    PasswordDiffer,
+    #[display("password not match")]
+    PasswordNotMatch,
     // login
     #[display("wrong password")]
     WrongPassword,
@@ -45,7 +45,7 @@ impl AuthError {
             Self::UserNotFound => 10008,
             Self::EmailAlreadyExists => 10009,
             Self::UsernameAlreadyExists => 10010,
-            Self::PasswordDiffer => 10011,
+            Self::PasswordNotMatch => 10011,
         }
     }
 }
@@ -70,7 +70,7 @@ impl From<AuthError> for APIError {
         };
         match from {
             AuthError::InvalidArgument(_)
-            | AuthError::PasswordDiffer
+            | AuthError::PasswordNotMatch
             | AuthError::WrongPassword => APIError::BadRequest(e),
             AuthError::UsernameAlreadyExists | AuthError::EmailAlreadyExists => {
                 APIError::CONFLICT(e)

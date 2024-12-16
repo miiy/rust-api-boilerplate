@@ -8,6 +8,10 @@ curl -X POST -H "Content-Type: application/json" http://127.0.0.1:8080/v1/posts 
     "category_id": 1,
     "title": "title",
     "author": "admin",
+    "source": "source",
+    "source_url": "source_url",
+    "thumbnail": "thumbnail",
+    "summary": "summary",
     "content": "content"
 }
 '
@@ -37,7 +41,11 @@ curl -X PUT -H "Content-Type: application/json" http://127.0.0.1:8080/v1/posts/1
     "category_id": 2,
     "title": "title1",
     "author": "admin1",
-    "content": "content1",
+    "source": "source1",
+    "source_url": "source_url1",
+    "thumbnail": "thumbnail1",
+    "summary": "summary1",
+    "content": "content1"
 }
 '
 ```

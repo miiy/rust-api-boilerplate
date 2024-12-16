@@ -16,7 +16,10 @@ pub struct ListResponseItem {
     pub category_id: u64,
     pub title: String,
     pub author: String,
-    pub content: String,
+    pub source: String,
+    pub source_url: String,
+    pub thumbnail: String,
+    pub summary: String,
     #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
     #[serde(with = "time::serde::iso8601")]
@@ -31,6 +34,10 @@ pub struct DetailResponse {
     pub category_id: u64,
     pub title: String,
     pub author: String,
+    pub source: String,
+    pub source_url: String,
+    pub thumbnail: String,
+    pub summary: String,
     pub content: String,
     #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
@@ -44,6 +51,10 @@ pub struct CreateRequest {
     pub category_id: u64,
     pub title: String,
     pub author: String,
+    pub source: String,
+    pub source_url: String,
+    pub thumbnail: String,
+    pub summary: String,
     pub content: String,
 }
 
@@ -58,6 +69,10 @@ pub struct UpdateRequest {
     pub category_id: u64,
     pub title: String,
     pub author: String,
+    pub source: String,
+    pub source_url: String,
+    pub thumbnail: String,
+    pub summary: String,
     pub content: String,
 }
 

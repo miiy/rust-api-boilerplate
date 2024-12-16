@@ -1,6 +1,6 @@
 use super::dto::*;
 use super::error::PostError;
-use super::model::Post;
+use super::model::{Post, PostStatus};
 use crate::pagination::Pagination;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
@@ -25,7 +25,10 @@ impl Service {
                 category_id: post.category_id,
                 title: post.title,
                 author: post.author,
-                content: post.content,
+                source: post.source,
+                source_url: post.source_url,
+                thumbnail: post.thumbnail,
+                summary: post.summary,
                 created_at: post
                     .created_at
                     .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
@@ -51,6 +54,10 @@ impl Service {
             category_id: post.category_id,
             title: post.title,
             author: post.author,
+            source: post.source,
+            source_url: post.source_url,
+            thumbnail: post.thumbnail,
+            summary: post.summary,
             content: post.content,
             created_at: post
                 .created_at
@@ -66,10 +73,16 @@ impl Service {
         let now = OffsetDateTime::now_utc();
         let post = Post {
             id: 0,
+            user_id: 0,
             category_id: req.category_id,
             title: req.title,
             author: req.author,
+            source: req.source,
+            source_url: req.source_url,
+            thumbnail: req.thumbnail,
+            summary: req.summary,
             content: req.content,
+            status: PostStatus::Published.as_i8(),
             created_at: Some(now),
             updated_at: Some(now),
         };
@@ -86,10 +99,16 @@ impl Service {
     ) -> Result<UpdateResponse, PostError> {
         let post = Post {
             id: id,
+            user_id: 0,
             category_id: req.category_id,
             title: req.title,
             author: req.author,
+            source: req.source,
+            source_url: req.source_url,
+            thumbnail: req.thumbnail,
+            summary: req.summary,
             content: req.content,
+            status: PostStatus::Published.as_i8(),
             created_at: None,
             updated_at: Some(OffsetDateTime::now_utc()),
         };

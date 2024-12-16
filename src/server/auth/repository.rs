@@ -10,9 +10,9 @@ impl User {
         Ok(count == 0)
     }
 
-    pub async fn check_name_available(pool: &MySqlPool, name: &str) -> Result<bool, sqlx::Error> {
-        let count: i32 = sqlx::query_scalar("select count(*) from users where `name` = ?")
-            .bind(name)
+    pub async fn check_username_available(pool: &MySqlPool, username: &str) -> Result<bool, sqlx::Error> {
+        let count: i32 = sqlx::query_scalar("select count(*) from users where `username` = ?")
+            .bind(username)
             .fetch_one(pool)
             .await?;
         Ok(count == 0)
@@ -21,13 +21,14 @@ impl User {
     pub async fn create(pool: &MySqlPool, item: &User) -> Result<u64, sqlx::Error> {
         sqlx::query(
             "
-        INSERT INTO users (`name`, `email`, `password`, `created_at`, `updated_at`)
-        VALUES(?, ?, ?, ?, ?)
+        INSERT INTO users (`username`, `email`, `password`, `status`, `created_at`, `updated_at`)
+        VALUES(?, ?, ?, ?, ?, ?)
         ",
         )
-        .bind(&item.name)
+        .bind(&item.username)
         .bind(&item.email)
         .bind(&item.password)
+        .bind(&item.status)
         .bind(&item.created_at)
         .bind(&item.updated_at)
         .execute(pool)
@@ -35,15 +36,15 @@ impl User {
         .map(|x| x.last_insert_id())
     }
 
-    pub async fn find_by_name(pool: &MySqlPool, name: String) -> Result<Option<User>, sqlx::Error> {
+    pub async fn find_by_username(pool: &MySqlPool, username: String) -> Result<Option<User>, sqlx::Error> {
         let item: Option<User> = sqlx::query_as(
             "
-        SELECT `id`, `name`, `password`
+        SELECT `id`, `username`, `password`
         FROM `users`
-        WHERE `name`=? AND `deleted_at` IS NULL
+        WHERE `username`=? AND `deleted_at` IS NULL
         ",
         )
-        .bind(name)
+        .bind(username)
         .fetch_optional(pool)
         .await?;
         Ok(item)

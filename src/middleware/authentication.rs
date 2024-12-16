@@ -82,7 +82,7 @@ where
 
         // extract the user from the token
         let user = AuthenticatedUser {
-            name: token_data.claims.sub,
+            username: token_data.claims.sub,
         };
         // insert authenticated user into the request extensions
         req.extensions_mut().insert(user);

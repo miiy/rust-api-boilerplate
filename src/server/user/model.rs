@@ -7,8 +7,10 @@ use time::OffsetDateTime;
 #[sqlx(default)]
 pub struct User {
     pub id: u64,
-    pub name: String,
+    pub username: String,
     pub email: String,
+    pub phone: String,
+    pub status: i8,
     pub created_at: Option<OffsetDateTime>,
     pub updated_at: Option<OffsetDateTime>,
 }

@@ -5,8 +5,9 @@ use time::OffsetDateTime;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ProfileResponse {
-    pub name: String,
+    pub username: String,
     pub email: String,
+    pub phone: String,
     #[serde(with = "time::serde::iso8601")]
     pub created_at: OffsetDateTime,
     #[serde(with = "time::serde::iso8601")]

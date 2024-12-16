@@ -11,7 +11,7 @@ pub async fn profile(
 ) -> Result<HttpResponse, Error> {
     if let Some(user_data) = user {
         let user = user_data.into_inner();
-        let resp = Service::profile(&user.name, &app_state.db)
+        let resp = Service::profile(&user.username, &app_state.db)
             .await
             .map_err(APIError::from)?;
         Ok(HttpResponse::Ok().json(resp))

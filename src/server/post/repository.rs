@@ -1,4 +1,4 @@
-use super::model::Post;
+use super::model::{Post, PostStatus};
 use sqlx::mysql::MySqlPool;
 use time::OffsetDateTime;
 
@@ -6,14 +6,20 @@ impl Post {
     pub async fn create(pool: &MySqlPool, item: &Post) -> Result<u64, sqlx::Error> {
         sqlx::query(
             "
-        INSERT INTO posts (`category_id`, `title`, `author`, `content`, `created_at`, `updated_at`)
-        VALUES(?, ?, ?, ?, ?, ?)
+        INSERT INTO posts (`user_id`, `category_id`, `title`, `author`, `source`, `source_url`, `thumbnail`, `summary`, `content`, `status`, `created_at`, `updated_at`)
+        VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ",
         )
+        .bind(&item.user_id)
         .bind(&item.category_id)
         .bind(&item.title)
         .bind(&item.author)
+        .bind(&item.source)
+        .bind(&item.source_url)
+        .bind(&item.thumbnail)
+        .bind(&item.summary)
         .bind(&item.content)
+        .bind(&item.status)
         .bind(&item.created_at)
         .bind(&item.updated_at)
         .execute(pool)
@@ -24,7 +30,7 @@ impl Post {
     pub async fn find(pool: &MySqlPool, id: u64) -> Result<Option<Post>, sqlx::Error> {
         let item: Option<Post> = sqlx::query_as(
             "
-        SELECT `id`, `category_id`, `title`,`author`, `content`, `created_at`, `updated_at`
+        SELECT `id`, `category_id`, `title`, `author`, `source`, `source_url`, `thumbnail`, `summary`, `content`, `created_at`, `updated_at`
         FROM `posts`
         WHERE `id`=? AND `deleted_at` IS NULL
         ",
@@ -49,13 +55,14 @@ impl Post {
     ) -> Result<Vec<Post>, sqlx::Error> {
         let items: Vec<Post> = sqlx::query_as(
             "
-        SELECT `id`, `category_id`, `title`, `author`, `content`
+        SELECT `id`, `category_id`, `title`, `author`, `source`, `source_url`, `thumbnail`, `summary`, `content`, `status`, `created_at`, `updated_at`
         FROM `posts`
-        WHERE `deleted_at` IS NULL
+        WHERE `status` = ? AND `deleted_at` IS NULL
         ORDER BY `created_at` DESC
         LIMIT ? OFFSET ?
         ",
         )
+        .bind(PostStatus::Published.as_i8())
         .bind(limit)
         .bind(offset)
         .fetch_all(pool)
@@ -67,13 +74,17 @@ impl Post {
     pub async fn update(pool: &MySqlPool, item: &Post) -> Result<u64, sqlx::Error> {
         sqlx::query(
             "
-        UPDATE posts SET `category_id` = ?, `title` = ?, `author` = ?, `content` = ?, `updated_at` = ?
+        UPDATE posts SET `category_id` = ?, `title` = ?, `author` = ?, `source` = ?, `source_url` = ?, `thumbnail` = ?, `summary` = ?, `content` = ?, `updated_at` = ?
         WHERE `id`=?
         ",
         )
             .bind(&item.category_id)
             .bind(&item.title)
             .bind(&item.author)
+            .bind(&item.source)
+            .bind(&item.source_url)
+            .bind(&item.thumbnail)
+            .bind(&item.summary)
             .bind(&item.content)
             .bind(&item.updated_at)
             .bind(&item.id)
