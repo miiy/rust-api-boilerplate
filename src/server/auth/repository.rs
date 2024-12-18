@@ -10,7 +10,10 @@ impl User {
         Ok(count == 0)
     }
 
-    pub async fn check_username_available(pool: &MySqlPool, username: &str) -> Result<bool, sqlx::Error> {
+    pub async fn check_username_available(
+        pool: &MySqlPool,
+        username: &str,
+    ) -> Result<bool, sqlx::Error> {
         let count: i32 = sqlx::query_scalar("select count(*) from users where `username` = ?")
             .bind(username)
             .fetch_one(pool)
@@ -36,7 +39,10 @@ impl User {
         .map(|x| x.last_insert_id())
     }
 
-    pub async fn find_by_username(pool: &MySqlPool, username: String) -> Result<Option<User>, sqlx::Error> {
+    pub async fn find_by_username(
+        pool: &MySqlPool,
+        username: String,
+    ) -> Result<Option<User>, sqlx::Error> {
         let item: Option<User> = sqlx::query_as(
             "
         SELECT `id`, `username`, `password`

@@ -1,8 +1,8 @@
-use super::dto::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse};
+use super::dto::*;
 use super::error::AuthError;
 use super::model::{User, UserStatus};
 use super::password;
-use crate::jwt::{AuthenticatedUser, JWT};
+use crate::jwt::JWT;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
 
@@ -76,7 +76,9 @@ impl Service {
                 token_type: "Bearer".to_string(),
                 access_token: token,
                 expires_in: jwt.expires_in,
-                user: AuthenticatedUser { username: user.username },
+                user: UserInfo {
+                    username: user.username,
+                },
             });
         }
         Err(AuthError::WrongPassword)

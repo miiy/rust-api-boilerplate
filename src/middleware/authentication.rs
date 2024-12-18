@@ -81,8 +81,11 @@ where
         };
 
         // extract the user from the token
+        let username = token_data.claims.sub;
+        let user_id = 0;
         let user = AuthenticatedUser {
-            username: token_data.claims.sub,
+            id: user_id,
+            username: username,
         };
         // insert authenticated user into the request extensions
         req.extensions_mut().insert(user);

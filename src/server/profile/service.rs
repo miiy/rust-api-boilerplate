@@ -8,10 +8,10 @@ pub struct Service;
 
 impl Service {
     pub async fn profile(
-        username: &str,
         pool: &MySqlPool,
+        user_id: u64,
     ) -> Result<dto::ProfileResponse, ProfileError> {
-        let user_option = User::find_by_username(&pool, username).await?;
+        let user_option = User::find(&pool, user_id).await?;
 
         if let Some(user) = user_option {
             let resp = dto::ProfileResponse {
