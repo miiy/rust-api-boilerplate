@@ -37,7 +37,8 @@ pub struct Redis {
 #[derive(Clone, Debug, Deserialize)]
 pub struct JWT {
     pub secret: String,
-    pub expires_in: u32,
+    pub expires_in: i64,
+    pub encryption_key: String,
 }
 
 impl Config {

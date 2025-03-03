@@ -10,7 +10,8 @@ docker build -f deploy/Dockerfile -t rust-api .
 
 ```bash
 docker run --name rust-api --restart always \
-    -p 8080:8080 \
-    -v /app/config:/app/config \
+    --log-opt max-size=1g \
+    -v /data/rust-api/config:/app/config \
+    --net backend \
     rust-api
 ```

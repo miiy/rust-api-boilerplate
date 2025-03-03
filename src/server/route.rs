@@ -1,26 +1,27 @@
+use super::article;
 use super::auth;
 use super::health;
 use super::index;
-use super::post;
-use super::profile;
 use super::user;
+use super::profile;
 use crate::middleware::authentication;
 use actix_web::web;
 
 pub fn config_api(cfg: &mut web::ServiceConfig) {
-    let auth_middleware = authentication::Authentication;
+    let auth_mw = authentication::Authentication;
 
-    // public routes
-    index::route::init_routes(cfg);
-    health::route::init_routes(cfg);
-    auth::route::init_routes(cfg);
-    user::route::init_routes(cfg);
-    post::route::init_routes(cfg);
+    // public
+    cfg.service(index::route::routes());
+    cfg.service(health::route::routes());
+    cfg.service(auth::route::routes());
 
-    // private routes
+    // jwt auth
     cfg.service(
         web::scope("")
-            .wrap(auth_middleware)
-            .configure(profile::route::init_routes),
+            .wrap(auth_mw)
+            .service(user::route::routes())
+            .service(profile::route::routes())
+            .service(article::route::routes())
     );
+
 }

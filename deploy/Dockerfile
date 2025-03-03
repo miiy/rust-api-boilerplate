@@ -11,4 +11,4 @@ FROM debian:bookworm
 WORKDIR /app
 COPY --from=builder /usr/src/app/target/release/rust-api /app/rust-api
 
-CMD ["rust-api"]
+CMD ["/app/rust-api"]

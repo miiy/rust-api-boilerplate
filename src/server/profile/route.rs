@@ -1,9 +1,18 @@
 use super::handler;
-use actix_web::web;
+use actix_web::{web, Scope};
 
 // GET /profile
-pub fn init_routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(
-        web::scope("/v1/profile").service(web::resource("").route(web::get().to(handler::profile))),
-    );
+// PUT /profile
+// PUT /profile/password
+pub fn routes() -> Scope {
+    web::scope("/v1/profile")
+        .service(
+            web::resource("")
+                .route(web::get().to(handler::profile))
+                .route(web::put().to(handler::update_profile)),
+        )
+        .service(
+            web::resource("/password")
+                .route(web::put().to(handler::change_password)),
+        )
 }

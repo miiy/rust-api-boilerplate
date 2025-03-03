@@ -1,7 +1,8 @@
+use crate::auth::jwt::JWTError;
 use crate::error::{APIError, ErrorEntity};
-use bcrypt::BcryptError;
 use derive_more::Display;
 use redis::RedisError;
+use rs_crypto::error::CryptoError;
 use std::error::Error;
 
 #[derive(Debug, Display)]
@@ -14,10 +15,10 @@ pub enum AuthError {
     Database { source: sqlx::Error },
     #[display("redis error: {source}")]
     Redis { source: RedisError },
-    #[display("bcrypt error: {source}")]
-    Bcrypt { source: BcryptError },
+    #[display("crypto error: {source}")]
+    Crypto { source: CryptoError },
     #[display("jwt error: {source}")]
-    JWT { source: jsonwebtoken::errors::Error },
+    JWT { source: JWTError },
     #[display("user not found")]
     UserNotFound,
     // register
@@ -40,7 +41,7 @@ impl AuthError {
             Self::Service(_) => 10003,
             Self::Database { .. } => 10004,
             Self::Redis { .. } => 10005,
-            Self::Bcrypt { .. } => 10006,
+            Self::Crypto { .. } => 10006,
             Self::JWT { .. } => 10007,
             Self::UserNotFound => 10008,
             Self::EmailAlreadyExists => 10009,
@@ -55,7 +56,7 @@ impl Error for AuthError {
         match self {
             Self::Database { source: ref e } => Some(e),
             Self::Redis { source: ref e } => Some(e),
-            Self::Bcrypt { source: ref e } => Some(e),
+            Self::Crypto { source: ref e } => Some(e),
             Self::JWT { source: ref e } => Some(e),
             _ => None,
         }
@@ -71,14 +72,14 @@ impl From<AuthError> for APIError {
         match from {
             AuthError::InvalidArgument(_)
             | AuthError::PasswordNotMatch
-            | AuthError::WrongPassword => APIError::BadRequest(e),
+            | AuthError::WrongPassword
+            | AuthError::Crypto { .. } => APIError::BadRequest(e),
             AuthError::UsernameAlreadyExists | AuthError::EmailAlreadyExists => {
                 APIError::CONFLICT(e)
             }
             AuthError::Service(_)
             | AuthError::Database { .. }
             | AuthError::Redis { .. }
-            | AuthError::Bcrypt { .. }
             | AuthError::JWT { .. } => APIError::InternalError(e),
             AuthError::UserNotFound => APIError::NotFound(e),
         }
@@ -97,14 +98,20 @@ impl From<RedisError> for AuthError {
     }
 }
 
-impl From<BcryptError> for AuthError {
-    fn from(from: BcryptError) -> AuthError {
-        AuthError::Bcrypt { source: from }
-    }
-}
-
 impl From<jsonwebtoken::errors::Error> for AuthError {
     fn from(from: jsonwebtoken::errors::Error) -> AuthError {
         AuthError::Service(from.to_string())
+    }
+}
+
+impl From<rs_crypto::error::CryptoError> for AuthError {
+    fn from(from: rs_crypto::error::CryptoError) -> AuthError {
+        AuthError::Crypto { source: from }
+    }
+}
+
+impl From<JWTError> for AuthError {
+    fn from(from: JWTError) -> AuthError {
+        AuthError::JWT { source: from }
     }
 }

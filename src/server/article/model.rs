@@ -3,7 +3,7 @@ use time::OffsetDateTime;
 
 #[derive(Default, Debug, FromRow)]
 #[sqlx(default)]
-pub struct Post {
+pub struct Article {
     pub id: u64,
     pub user_id: u64,
     pub category_id: u64,
@@ -21,14 +21,14 @@ pub struct Post {
 
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum PostStatus {
+pub enum ArticleStatus {
     Draft = 0,
     Published = 1,
     Disabled = 2,
 }
 
 #[allow(dead_code)]
-impl PostStatus {
+impl ArticleStatus {
     pub fn from_i8(value: i8) -> Option<Self> {
         match value {
             0 => Some(Self::Draft),

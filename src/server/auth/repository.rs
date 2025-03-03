@@ -22,7 +22,10 @@ impl User {
     }
 
     pub async fn create(pool: &MySqlPool, item: &User) -> Result<u64, sqlx::Error> {
-        sqlx::query(
+        let mut tx = pool.begin().await?;
+
+        // users
+        let user_id = sqlx::query(
             "
         INSERT INTO users (`username`, `email`, `password`, `status`, `created_at`, `updated_at`)
         VALUES(?, ?, ?, ?, ?, ?)
@@ -34,9 +37,27 @@ impl User {
         .bind(&item.status)
         .bind(&item.created_at)
         .bind(&item.updated_at)
-        .execute(pool)
+        .execute(&mut *tx)
         .await
-        .map(|x| x.last_insert_id())
+        .map(|x| x.last_insert_id())?;
+
+        // user_profile
+        sqlx::query(
+            "
+        INSERT INTO user_profiles (`user_id`, `created_at`, `updated_at`)
+        VALUES(?, ?, ?)
+        ",
+        )
+        .bind(user_id)
+        .bind(&item.created_at)
+        .bind(&item.updated_at)
+        .execute(&mut *tx)
+        .await?;
+
+        // commit
+        tx.commit().await?;
+
+        Ok(user_id)
     }
 
     pub async fn find_by_username(

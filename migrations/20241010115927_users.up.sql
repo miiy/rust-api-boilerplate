@@ -4,10 +4,10 @@ START TRANSACTION;
 CREATE TABLE IF NOT EXISTS `users`
 (
     `id`                 bigint unsigned NOT NULL AUTO_INCREMENT,
-    `username`           varchar(255)    NOT NULL DEFAULT '',
+    `username`           varchar(255)    DEFAULT NULL,
     `password`           varchar(255)    NOT NULL DEFAULT '',
-    `email`              varchar(255)    NOT NULL DEFAULT '',
-    `phone`              varchar(255)    NOT NULL DEFAULT '',
+    `email`              varchar(255)    DEFAULT NULL,
+    `phone`              varchar(255)    DEFAULT NULL,
     `status`             tinyint         NOT NULL DEFAULT 0 COMMENT '0: disabled, 1: enabled',
     `created_at`         timestamp       NULL     DEFAULT NULL,
     `updated_at`         timestamp       NULL     DEFAULT NULL,

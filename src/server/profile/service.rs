@@ -1,33 +1,42 @@
-use super::dto;
 use super::error::ProfileError;
-use super::model::User;
+use crate::server::user::service as user_service;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
 
-pub struct Service;
+// profile
+#[derive(Debug)]
+pub struct ProfileRequest {
+    pub username: String,
+}
 
-impl Service {
-    pub async fn profile(
-        pool: &MySqlPool,
-        user_id: u64,
-    ) -> Result<dto::ProfileResponse, ProfileError> {
-        let user_option = User::find(&pool, user_id).await?;
+#[derive(Debug)]
+pub struct ProfileResponse {
+    pub username: String,
+    pub nickname: String,
+    pub avatar: String,
+    pub current_status: String,
+    pub bio: String,
+    pub created_at: Option<OffsetDateTime>,
+}
 
-        if let Some(user) = user_option {
-            let resp = dto::ProfileResponse {
-                username: user.username,
-                email: user.email,
-                phone: user.phone,
-                created_at: user
-                    .created_at
-                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
-                updated_at: user
-                    .updated_at
-                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
-            };
-            Ok(resp)
-        } else {
-            Err(ProfileError::NotFound)
-        }
-    }
+pub async fn profile(
+    req: ProfileRequest,
+    pool: &MySqlPool,
+) -> Result<ProfileResponse, ProfileError> {
+    let user = user_service::get_user_by_username(&req.username, &pool)
+        .await
+        .map_err(|e| ProfileError::Service(e.to_string()))?;
+    let user_profile = user_service::get_user_profile(user.id, &pool)
+        .await
+        .map_err(|e| ProfileError::Service(e.to_string()))?;
+
+    let resp = ProfileResponse {
+        username: user.username,
+        nickname: user_profile.nickname,
+        avatar: user_profile.avatar,
+        current_status: user_profile.current_status,
+        bio: user_profile.bio,
+        created_at: user_profile.created_at,
+    };
+    Ok(resp)
 }
